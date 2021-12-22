@@ -142,7 +142,6 @@ namespace WeatherApp.Droid
 
         void GetLocation()
         {
-            var loc = Service.GetService<WeatherViewModel>();
             Task.Run(() =>
                 RunOnUiThread(async () =>
                 {
@@ -152,10 +151,10 @@ namespace WeatherApp.Droid
                         if (status == PermissionStatus.Granted)
                         {
                             messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = true, Message = "Location" });
-                            loc.Location = await Geolocation.GetLastKnownLocationAsync();
-                            if (loc.Location == null)
+                            ViewModel.Location = await Geolocation.GetLastKnownLocationAsync();
+                            if (ViewModel.Location == null)
                             {
-                                loc.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
+                                ViewModel.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
                                 {
                                     DesiredAccuracy = GeolocationAccuracy.Medium,
                                     Timeout = TimeSpan.FromSeconds(15)
@@ -169,10 +168,10 @@ namespace WeatherApp.Droid
                             if (status == PermissionStatus.Granted)
                             {
                                 messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = true, Message = "Location" });
-                                loc.Location = await Geolocation.GetLastKnownLocationAsync();
-                                if (loc.Location == null)
+                                ViewModel.Location = await Geolocation.GetLastKnownLocationAsync();
+                                if (ViewModel.Location == null)
                                 {
-                                    loc.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
+                                    ViewModel.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
                                     {
                                         DesiredAccuracy = GeolocationAccuracy.Medium,
                                         Timeout = TimeSpan.FromSeconds(15)
