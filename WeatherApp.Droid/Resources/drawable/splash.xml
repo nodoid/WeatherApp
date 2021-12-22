@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+  <item>
+    <bitmap
+        android:src="@drawable/weather"
+        android:tileMode="disabled"
+        android:gravity="center"/>
+    android:layout_centerInParent="true"
+    android:scaleType="centerInside"
+  </item>
+</layer-list>
