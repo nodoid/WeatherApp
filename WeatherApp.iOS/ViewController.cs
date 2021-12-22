@@ -10,6 +10,7 @@ namespace WeatherApp.iOS
     public partial class ViewController : UIViewController
     {
         IMessenger messenger => (IMessenger)Startup.ServiceProvider.GetService(typeof(IMessenger));
+        WeatherViewModel ViewModel { get; set; }
 
         bool Busy { get; set; }
         WeatherData WeatherData { get; set; }
@@ -21,6 +22,9 @@ namespace WeatherApp.iOS
         public override void ViewDidLoad ()
         {
             base.ViewDidLoad ();
+
+            ViewModel = AppDelegate.Service.GetService<WeatherViewModel>();
+
             messenger.Register<BooleanMessage>(this, (m, t) =>
             {
                 switch (t.Message)
@@ -29,17 +33,30 @@ namespace WeatherApp.iOS
                         Busy = t.BoolValue;
                         break;
                     case "HasData":
-                        WeatherData = AppDelegate.Service.GetService<WeatherViewModel>().WeatherData;
+                        WeatherData = ViewModel.WeatherData;
+                        if (!string.IsNullOrEmpty(WeatherData.Sys.Country))
+                            ShowLightboxDialog();
+                        else
+                            ShowError("The weather data returned was empty");
+                        break;
+                    case "Error":
+                        ShowError();
                         break;
                 }
             });
-            // Perform any additional setup after loading the view, typically from a nib.
         }
 
         public override void DidReceiveMemoryWarning ()
         {
             base.DidReceiveMemoryWarning ();
             // Release any cached data, images, etc that aren't in use.
+        }
+
+        void ShowError(string message = "")
+        {
+            var alert = UIAlertController.Create("Error", string.IsNullOrEmpty(message) ? "The City and Country must be filled in" : message, UIAlertControllerStyle.Alert);
+            alert.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
+            alert.PresentViewController(alert, animated: true, completionHandler: null); ;
         }
     }
 }

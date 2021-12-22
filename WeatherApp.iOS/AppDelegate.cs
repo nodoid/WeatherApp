@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Foundation;
+using UIKit;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace WeatherApp.iOS
         public UIWindow Window { get; set; }
         public static IServiceProvider Service { get; set; }
         IMessenger messenger => (IMessenger)Startup.ServiceProvider.GetService(typeof(IMessenger));
+        BaseViewModel viewModel { get; set; }
+        WeatherViewModel weatherViewModel { get; set; }
 
         public static AppDelegate Self { get; private set; }
 
@@ -29,9 +32,9 @@ namespace WeatherApp.iOS
 
             new SQLiteConnectionFactory().GetConnection();
             Service = WeatherApp.Startup.Init ();
-
+            weatherViewModel = Service.GetService<WeatherViewModel> ();
             var connnect = (Connectivity.NetworkAccess == NetworkAccess.Internet) || (Connectivity.NetworkAccess == NetworkAccess.Local);
-            Service.GetService<BaseViewModel>().IsConnected = connnect;
+            viewModel.IsConnected = connnect;
             Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
 
             GetLocation();
@@ -41,12 +44,11 @@ namespace WeatherApp.iOS
 
         void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-            Service.GetService<BaseViewModel>().IsConnected = Convert.ToBoolean(e.NetworkAccess);
+            viewModel.IsConnected = Convert.ToBoolean(e.NetworkAccess);
         }
 
         void GetLocation()
         {
-            var loc = Service.GetService<WeatherViewModel>();
             Task.Run(() =>
                 BeginInvokeOnMainThread(async () =>
                 {
@@ -56,14 +58,15 @@ namespace WeatherApp.iOS
                         if (status == PermissionStatus.Granted)
                         {
                             messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = true, Message = "Location" });
-                            loc.Location = await Geolocation.GetLastKnownLocationAsync();
-                            if (loc.Location == null)
+                            weatherViewModel.Location = await Geolocation.GetLastKnownLocationAsync();
+                            if (weatherViewModel.Location == null)
                             {
-                                loc.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
+                                weatherViewModel.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
                                 {
                                     DesiredAccuracy = GeolocationAccuracy.Medium,
                                     Timeout = TimeSpan.FromSeconds(15)
                                 });
+                                weatherViewModel.CanUseGeoloc = true;
                             }
                         }
                         else
@@ -72,18 +75,22 @@ namespace WeatherApp.iOS
                             if (status == PermissionStatus.Granted)
                             {
                                 messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = true, Message = "Location" });
-                                loc.Location = await Geolocation.GetLastKnownLocationAsync();
-                                if (loc.Location == null)
+                                weatherViewModel.Location = await Geolocation.GetLastKnownLocationAsync();
+                                if (weatherViewModel.Location == null)
                                 {
-                                    loc.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
+                                    weatherViewModel.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
                                     {
                                         DesiredAccuracy = GeolocationAccuracy.Medium,
                                         Timeout = TimeSpan.FromSeconds(15)
                                     });
+                                    weatherViewModel.CanUseGeoloc = true;
                                 }
                             }
                             else
+                            {
                                 messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = false, Message = "Location" });
+                                weatherViewModel.CanUseGeoloc = false;
+                            }
                         }
                     }
                     catch (FeatureNotSupportedException fnsEx)
@@ -100,16 +107,21 @@ namespace WeatherApp.iOS
                     }
                     catch (Exception ex)
                     {
-#if DEBUG
-                        Console.WriteLine(ex.ToString());
-#endif
+                        ShowError(ex.ToString());
                     }
                 }));
         }
 
-        // UISceneSession Lifecycle
+        void ShowError(string message = "")
+        {
+            var alert = UIAlertController.Create("Error", string.IsNullOrEmpty(message) ? "The City and Country must be filled in" : message, UIAlertControllerStyle.Alert);
+            alert.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
+            alert.PresentViewController(alert, animated: true, completionHandler: null); ;
+        }
 
-        [Export ("application:configurationForConnectingSceneSession:options:")]
+            // UISceneSession Lifecycle
+
+            [Export ("application:configurationForConnectingSceneSession:options:")]
         public UISceneConfiguration GetConfiguration (UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options)
         {
             // Called when a new scene session is being created.
