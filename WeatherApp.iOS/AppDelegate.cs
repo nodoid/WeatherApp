@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Foundation;
-using UIKit;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Threading.Tasks;
