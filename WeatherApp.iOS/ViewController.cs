@@ -31,6 +31,7 @@ namespace WeatherApp.iOS
                 {
                     case "IsBusy":
                         Busy = t.BoolValue;
+                        
                         break;
                     case "HasData":
                         WeatherData = ViewModel.WeatherData;
@@ -44,6 +45,11 @@ namespace WeatherApp.iOS
                         break;
                 }
             });
+        }
+
+        void ShowLightboxDialog()
+        {
+            
         }
 
         public override void DidReceiveMemoryWarning ()
