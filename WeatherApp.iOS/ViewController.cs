@@ -46,7 +46,7 @@ namespace WeatherApp.iOS
                 }
             });
 
-
+            
         }
 
         void ShowLightboxDialog()
