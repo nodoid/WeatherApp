@@ -46,13 +46,24 @@ namespace WeatherApp.iOS
                 }
             });
 
-
+            
         }
 
         void ShowLightboxDialog()
         {
-            
+            btnOK.TouchUpInside += (o, e) => DismissLightbox();
+            lblSky.Text = WeatherData.Weather[0].Description;
+            lblTemp.Text = (WeatherData.Main.Temp - 273.15).ToString("n2");
+
         }
+
+        void DismissLightbox()
+        {
+            viewResults.Hidden = true;
+            ViewModel.ShowData = false;
+        }
+
+        string ConvertFromEpoch(int epoch) => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(epoch).ToShortTimeString();
 
         public override void DidReceiveMemoryWarning ()
         {
