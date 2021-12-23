@@ -284,7 +284,28 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <connections>
-                        <outlet property="view" destination="a5N-Nj-RJ9" id="0Mz-P2-wsZ"/>
+						<outlet property="txtCity" destination="Cw7-Ng-Ox2" id="name-outlet-1"/>
+						<outlet property="txtState" destination="AkX-J8-2EM" id="name-outlet-2"/>
+						<outlet property="txtCountry" destination="yqx-S5-uM7" id="name-outlet-3"/>
+						<outlet property="btnGetWeather" destination="33a-59-2PP" id="name-outlet-4"/>
+						<outlet property="btnResetLoc" destination="phE-Wy-GH9" id="name-outlet-5"/>
+						<outlet property="btnResetData" destination="1Li-uV-qAr" id="name-outlet-6"/>
+						<outlet property="switchCurrntLoc" destination="9En-hV-CZc" id="name-outlet-7"/>
+						<outlet property="switchSave" destination="Cec-l9-Odn" id="name-outlet-8"/>
+						<outlet property="spinProgress" destination="UVt-ov-Y1E" id="name-outlet-9"/>
+
+						<outlet property="viewResults" destination="odn-uH-sZG" id="name-outlet-10"/>
+						<outlet property="btnOK" destination="Aa5N-Nj-RJ9" id="name-outlet-11"/>
+						<outlet property="lblSky" destination="dIs-FE-LLU" id="name-outlet-12"/>
+						<outlet property="lblTemp" destination="avk-Y0-zjm" id="name-outlet-13"/>
+						<outlet property="lblTempMin" destination="Sem-Pg-TmU" id="name-outlet-14"/>
+						<outlet property="lblTempMax" destination="MlD-uy-eOk" id="name-outlet-15"/>
+						<outlet property="lblPressure" destination="O6e-wj-2lA" id="name-outlet-16"/>
+						<outlet property="lblHumid" destination="l0R-X8-7ir" id="name-outlet-17"/>
+						<outlet property="lblSunrise" destination="DdD-pO-gdH" id="name-outlet-18"/>
+						<outlet property="lblSunset" destination="3P7-tv-KXl" id="name-outlet-19"/>
+						<outlet property="lblSpeed" destination="hIE-SW-g3F" id="name-outlet-20"/>
+						<outlet property="lblDegrees" destination="UGk-jt-Vm5" id="name-outlet-21"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
