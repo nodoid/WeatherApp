@@ -15,7 +15,8 @@
         android:minHeight="25px"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/linearLayout2">
+        android:id="@+id/linearLayout2"
+        android:paddingHorizontal="4dp">
         <TableLayout
             android:minWidth="25px"
             android:minHeight="25px"
@@ -25,67 +26,104 @@
             <TableRow
                 android:id="@+id/tableRow1"
                 android:layout_height="30px"
-                android:gravity="center_horizontal">
+                android:gravity="center_horizontal"
+                android:layout_width="match_parent">
                 <TextView
                     android:text="City Name"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:layout_column="0"
                     android:id="@+id/textView10"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="0.3" />
+                    android:layout_weight="0.3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
                 <TextView
                     android:text="State"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:layout_column="1"
                     android:id="@+id/textView11"
                     android:layout_marginRight="8dp"
-                    android:layout_weight="0.3" />
+                    android:layout_weight="0.3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
                 <TextView
                     android:text="Country"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:layout_column="2"
                     android:id="@+id/textView12"
-                    android:layout_weight="0.3" />
+                    android:layout_weight="0.3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
             </TableRow>
             <TableRow
                 android:id="@+id/tableRow2"
                 android:layout_height="70px"
-                android:gravity="center|center_horizontal">
+                android:gravity="center|center_horizontal"
+                android:layout_width="match_parent">
                 <EditText
                     android:layout_column="0"
                     android:id="@+id/editCity"
                     android:layout_weight="0.3"
-                    android:layout_height="60dp" />
+                    android:layout_height="60dp"
+                    android:inputType="text"
+                    android:layout_width="match_parent" />
                 <EditText
                     android:layout_column="1"
                     android:id="@+id/editState"
                     android:layout_weight="0.3"
-                    android:layout_height="60dp" />
+                    android:layout_height="60dp"
+                    android:inputType="text"
+                    android:layout_width="match_parent" />
                 <EditText
                     android:layout_column="2"
                     android:id="@+id/editCountry"
                     android:layout_weight="0.3"
-                    android:layout_height="60dp" />
-            </TableRow>
-            <TableRow
-                android:id="@+id/tableRow3">
-                <TextView
-                    p4:placeholder="true"
-                    android:minWidth="30px"
-                    android:minHeight="30px"
-                    android:id="@+id/textView7" />
-                <TextView
-                    p4:placeholder="true"
-                    android:minWidth="30px"
-                    android:minHeight="30px"
-                    android:id="@+id/textView8" />
-                <TextView
-                    p4:placeholder="true"
-                    android:minWidth="30px"
-                    android:minHeight="30px"
-                    android:id="@+id/textView9" />
+                    android:layout_height="60dp"
+                    android:inputType="text"
+                    android:layout_width="match_parent" />
             </TableRow>
         </TableLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:padding="4dp"
+        android:orientation="vertical"
+        android:id="@+id/locationLayout">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:id="@+id/locationPlace"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Place: "
+                android:id="@+id/locP"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/locPlace"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:id="@+id/locationGeoloc"
+            android:orientation="horizontal" >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Geolocation: "
+                android:id="@+id/locGeo"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/locGeoplace"/>
+        </LinearLayout>
     </LinearLayout>
     <LinearLayout
         android:orientation="horizontal"
