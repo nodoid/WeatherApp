@@ -13,7 +13,7 @@ namespace WeatherApp.Helpers
         {
             var i = new ServiceCollection();
 
-            i.AddSingleton<IWebservice, Webservice>().
+            i.AddSingleton<IWeatherService, WeatherService>().
                 AddSingleton<IMessenger>(WeakReferenceMessenger.Default).
                 AddSingleton<IRepository, SqLiteRepository>().
                 AddSingleton<ISqLiteConnectionFactory, Connection>();
