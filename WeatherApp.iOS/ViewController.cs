@@ -31,7 +31,7 @@ namespace WeatherApp.iOS
                 {
                     case "IsBusy":
                         Busy = t.BoolValue;
-                        
+                        spinProgress.Hidden = Busy ? false : true;
                         break;
                     case "HasData":
                         WeatherData = ViewModel.WeatherData;
@@ -46,7 +46,35 @@ namespace WeatherApp.iOS
                 }
             });
 
-            
+            messenger.Register<StringMessage>(this, (m, t) => ShowError(t.Message));
+
+            switchCurrentLoc.ValueChanged += (o, e) =>
+            {
+                if (ViewModel.CanUseGeoloc)
+                    ViewModel.CanUseGeoloc = ((UISwitch)o).On;
+            };
+            switchSave.ValueChanged += (o, e) => ViewModel.UserOnStartup = ((UISwitch)o).On;
+            btnResetLoc.TouchUpInside += (o, e) => ViewModel.ResetLocation = true;
+            btnResetData.TouchUpInside += (o, e) => ViewModel.ResetData = true;
+
+            btnGetWeather.TouchUpInside += (o, e) =>
+            {
+                if (ViewModel.CanUseGeoloc)
+                    ViewModel.GetDataForLocation.Execute(null);
+                else
+                    ViewModel.GetDataForCity.Execute(null);
+            };
+
+            txtCity.Changed += (o, e) => ViewModel.City = ((UITextView)o).Text;
+            txtState.Changed += (o, e) => ViewModel.State = ((UITextView)o).Text;
+            txtCountry.Changed += (o, e) => ViewModel.Country = ((UITextView)o).Text;
+
+            ViewModel.Setup();
+
+            switchSave.On = ViewModel.UserOnStartup;
+            switchCurrentLoc.On = ViewModel.CanUseGeoloc;
+
+            spinProgress.Hidden = true;
         }
 
         void ShowLightboxDialog()
@@ -54,7 +82,14 @@ namespace WeatherApp.iOS
             btnOK.TouchUpInside += (o, e) => DismissLightbox();
             lblSky.Text = WeatherData.Weather[0].Description;
             lblTemp.Text = (WeatherData.Main.Temp - 273.15).ToString("n2");
-
+            lblTempMin.Text = (WeatherData.Main.TempMin - 273.15).ToString("n2");
+            lblTempMax.Text = (WeatherData.Main.TempMax - 273.15).ToString("n2");
+            lblPressure.Text = $"{WeatherData.Main.Pressure}";
+            lblHumid.Text = $"{WeatherData.Main.Humidity}";
+            lblSunrise.Text = $"{ConvertFromEpoch(WeatherData.Sys.Sunrise)}";
+            lblSunset.Text = $"{ConvertFromEpoch(WeatherData.Sys.Sunset)}";
+            lblSpeed.Text = $"{WeatherData.Wind.Speed}";
+            lblDegrees.Text = $"{WeatherData.Wind.Deg}";
         }
 
         void DismissLightbox()
