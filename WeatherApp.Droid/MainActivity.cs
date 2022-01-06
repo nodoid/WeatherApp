@@ -28,6 +28,8 @@ namespace WeatherApp.Droid
 
         Dialog ModalDialog;
         ProgressBar ProgressBar;
+        TextView locPlace, locGeoplace;
+        CheckBox loc;
 
         WeatherViewModel ViewModel { get; set; }
         BaseViewModel BaseViewModel { get; set; }
@@ -82,13 +84,15 @@ namespace WeatherApp.Droid
             ProgressBar.Visibility = ViewStates.Invisible;
 
             var save = FindViewById<CheckBox>(Resource.Id.checkBox1);
-            var loc = FindViewById<CheckBox>(Resource.Id.chkLocation);
+            loc = FindViewById<CheckBox>(Resource.Id.chkLocation);
             var go = FindViewById<Button>(Resource.Id.btnWeather);
             var reset = FindViewById<Button>(Resource.Id.btnReset);
             var clear = FindViewById<Button>(Resource.Id.btnResetData);
             var city = FindViewById<EditText>(Resource.Id.editCity);
             var country = FindViewById<EditText>(Resource.Id.editCountry);
             var state = FindViewById<EditText>(Resource.Id.editState);
+            locPlace = FindViewById<TextView>(Resource.Id.locPlace);
+            locGeoplace = FindViewById<TextView>(Resource.Id.locGeoplace);
 
             save.CheckedChange += (o, e) => ViewModel.UserOnStartup = e.IsChecked;
             reset.Click += (o, e) => ViewModel.ResetLocation = true;
@@ -115,6 +119,18 @@ namespace WeatherApp.Droid
             ViewModel.Setup();
 
             save.Checked = ViewModel.UserOnStartup;
+            loc.Checked = ViewModel.CanUseGeoloc;
+
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            locPlace.Text = ViewModel.PlaceName;
+            locGeoplace.Text = ViewModel.Geoloc;
+        }
+
+        void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            locPlace.Text = ViewModel.PlaceName;
+            locGeoplace.Text = ViewModel.Geoloc;
             loc.Checked = ViewModel.CanUseGeoloc;
         }
 
