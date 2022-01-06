@@ -9,11 +9,21 @@ namespace WeatherApp.ViewModels
     public class WeatherViewModel : BaseViewModel
     {
         IRepository repository => (IRepository)Startup.ServiceProvider.GetService(typeof(IRepository));
-        IWebservice webservice => (IWebservice)Startup.ServiceProvider.GetService(typeof(IWebservice));
+        IWeatherService webservice => (IWeatherService)Startup.ServiceProvider.GetService(typeof(IWeatherService));
         IMessenger messenger => (IMessenger)Startup.ServiceProvider.GetService(typeof(IMessenger));
 
         public void Setup()
         {
+            messenger.Register<BooleanMessage>(this, (m, t) =>
+            {
+                switch (t.Message)
+                {
+                    case "Location":
+                        CanUseGeoloc = t.BoolValue;
+                        break;
+                }
+            });
+
             var user = repository.GetData<UserSettings>();
             if (user != null)
             {
@@ -24,6 +34,13 @@ namespace WeatherApp.ViewModels
                 Country = user.Country;
                 UserOnStartup = user.AutoOnStart;
                 CanUseGeoloc = user.CanUseGeolocation;
+                Latitude = user.LastLat;
+                Longitude = user.LastLng;
+
+                PlaceName = $"{user.CityName}";
+                PlaceName += user.IsUSState ? user.USState + ", " : ", ";
+                PlaceName += user.Country;
+                Geoloc = $"lat = {user.LastLat}, lng = {user.LastLng}";
 
                 if (user.AutoOnStart)
                 {
@@ -39,6 +56,20 @@ namespace WeatherApp.ViewModels
             }
             else
                 UserSettings = new UserSettings();
+        }
+
+        string? placeName;
+        public string PlaceName
+        {
+            get => placeName;
+            set => SetProperty(ref placeName, value);
+        }
+
+        string? geoloc;
+        public string Geoloc
+        {
+            get => geoloc;
+            set => SetProperty(ref geoloc, value);
         }
 
         UserSettings UserSettings { get; set; }
@@ -88,7 +119,12 @@ namespace WeatherApp.ViewModels
         public Location Location
         {
             get => location;
-            set => SetProperty(ref location, value);
+            set
+            {
+                SetProperty(ref location, value);
+                Latitude = value.Latitude;
+                Longitude = value.Longitude;
+            }
         }
 
         public bool ResetData
@@ -145,6 +181,14 @@ namespace WeatherApp.ViewModels
             set => SetProperty(ref userOnStartup, value);
         }
 
+        void DisplayPlace()
+        {
+            PlaceName = $"{WeatherData.Name}";
+            PlaceName += !string.IsNullOrEmpty(state) ? state + ", " : ", ";
+            PlaceName += WeatherData.Sys.Country;
+            Geoloc = $"lat = {WeatherData.Coord.Lat}, lng = {WeatherData.Coord.Lon}";
+        }
+
         void SaveSettings()
         {
             if (City == UserSettings.CityName)
@@ -186,6 +230,7 @@ namespace WeatherApp.ViewModels
                     if (data != null)
                     {
                         WeatherData = data;
+                        DisplayPlace();
                         ShowData = true;
                         messenger.Send(new BooleanMessage { BoolValue = ShowData, Message = "HasData" });
                         if (UserOnStartup)
@@ -212,6 +257,7 @@ namespace WeatherApp.ViewModels
             if (data != null)
             {
                 WeatherData = data;
+                DisplayPlace();
                 ShowData = true;
                 messenger.Send(new BooleanMessage { BoolValue = ShowData, Message = "HasData" });
                 if (UserOnStartup)
