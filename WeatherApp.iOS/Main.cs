@@ -1,4 +1,5 @@
-﻿using UIKit;
+﻿using System;
+using UIKit;
 
 namespace WeatherApp.iOS
 {
@@ -7,9 +8,14 @@ namespace WeatherApp.iOS
         // This is the main entry point of the application.
         static void Main(string[] args)
         {
-            // if you want to use a different Application Delegate class from "AppDelegate"
-            // you can specify it here.
-            UIApplication.Main(args, null, typeof(AppDelegate));
+            try
+            {
+                UIApplication.Main(args, null, typeof(AppDelegate));
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error : {ex.Message} -- {ex.InnerException?.Message}");
+            }
         }
     }
 }
