@@ -1,9 +1,11 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Threading.Tasks;
 using UIKit;
 using WeatherApp.Models;
 using WeatherApp.ViewModels;
+using Xamarin.Essentials;
 
 namespace WeatherApp.iOS
 {
@@ -24,6 +26,8 @@ namespace WeatherApp.iOS
             base.ViewDidLoad ();
 
             ViewModel = AppDelegate.Service.GetService<WeatherViewModel>();
+
+            GetLocation();
 
             messenger.Register<BooleanMessage>(this, (m, t) =>
             {
@@ -68,6 +72,7 @@ namespace WeatherApp.iOS
             txtCity.ValueChanged += (o, e) => ViewModel.City = ((UITextView)o).Text;
             txtState.ValueChanged += (o, e) => ViewModel.State = ((UITextView)o).Text;
             txtCountry.ValueChanged += (o, e) => ViewModel.Country = ((UITextView)o).Text;
+            lblPlace.Text = lblGeolocation.Text = "";
 
             ViewModel.Setup();
 
@@ -75,6 +80,15 @@ namespace WeatherApp.iOS
             switchUseLocation.On = ViewModel.CanUseGeoloc;
 
             spinProgress.Hidden = true;
+
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            lblPlace.Text = ViewModel.PlaceName;
+            lblGeolocation.Text = ViewModel.Geoloc;
+            switchUseLocation.On = ViewModel.CanUseGeoloc;
         }
 
         void ShowLightboxDialog()
@@ -100,10 +114,69 @@ namespace WeatherApp.iOS
 
         string ConvertFromEpoch(int epoch) => new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(epoch).ToShortTimeString();
 
-        public override void DidReceiveMemoryWarning ()
+        void GetLocation()
         {
-            base.DidReceiveMemoryWarning ();
-            // Release any cached data, images, etc that aren't in use.
+            Task.Run(() =>
+                BeginInvokeOnMainThread(async () =>
+                {
+                    try
+                    {
+                        var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
+                        if (status == PermissionStatus.Granted)
+                        {
+                            messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = true, Message = "Location" });
+                            ViewModel.Location = await Geolocation.GetLastKnownLocationAsync();
+                            if (ViewModel.Location == null)
+                            {
+                                ViewModel.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
+                                {
+                                    DesiredAccuracy = GeolocationAccuracy.Medium,
+                                    Timeout = TimeSpan.FromSeconds(15)
+                                });
+                                ViewModel.CanUseGeoloc = true;
+                            }
+                        }
+                        else
+                        {
+                            status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
+                            if (status == PermissionStatus.Granted)
+                            {
+                                messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = true, Message = "Location" });
+                                ViewModel.Location = await Geolocation.GetLastKnownLocationAsync();
+                                if (ViewModel.Location == null)
+                                {
+                                    ViewModel.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
+                                    {
+                                        DesiredAccuracy = GeolocationAccuracy.Medium,
+                                        Timeout = TimeSpan.FromSeconds(15)
+                                    });
+                                    ViewModel.CanUseGeoloc = true;
+                                }
+                            }
+                            else
+                            {
+                                messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = false, Message = "Location" });
+                                ViewModel.CanUseGeoloc = false;
+                            }
+                        }
+                    }
+                    catch (FeatureNotSupportedException fnsEx)
+                    {
+#if DEBUG
+                        Console.WriteLine($"Not supported : {fnsEx.Message}--{fnsEx.InnerException?.Message}");
+#endif
+                    }
+                    catch (PermissionException pEx)
+                    {
+#if DEBUG
+                        Console.WriteLine($"Failed permission - {pEx.Message}--{pEx.InnerException?.Message}");
+#endif
+                    }
+                    catch (Exception ex)
+                    {
+                        ShowError(ex.ToString());
+                    }
+                }));
         }
 
         void ShowError(string message = "")
@@ -111,6 +184,12 @@ namespace WeatherApp.iOS
             var alert = UIAlertController.Create("Error", string.IsNullOrEmpty(message) ? "The City and Country must be filled in" : message, UIAlertControllerStyle.Alert);
             alert.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
             alert.PresentViewController(alert, animated: true, completionHandler: null); ;
+        }
+
+        public override void DidReceiveMemoryWarning ()
+        {
+            base.DidReceiveMemoryWarning ();
+            // Release any cached data, images, etc that aren't in use.
         }
     }
 }

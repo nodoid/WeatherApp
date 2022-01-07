@@ -48,7 +48,7 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
-                                    <action selector="txtCity:" destination="BYZ-38-t0r" eventType="editingDidEnd" id="lbx-CX-hru"/>
+                                    <action selector="txtCity:" destination="BYZ-38-t0r" eventType="editingDidEnd" id="OW7-Ed-fzT"/>
                                 </connections>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="txtState" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AkX-J8-2EM" userLabel="txtState">
@@ -90,17 +90,10 @@
                                     <action selector="btnResetLocation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ojE-7e-AZF"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="btnReset" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Li-uV-qAr" userLabel="btnReset">
-                                <rect key="frame" x="248" y="302" width="95" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Reset Data"/>
-                            </button>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" restorationIdentifier="switchCurrentLoc" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9En-hV-CZc" userLabel="switchCurrentLoc">
                                 <rect key="frame" x="105" y="369" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="switchCurrentLoc:" destination="BYZ-38-t0r" eventType="valueChanged" id="jcy-8z-XAa"/>
                                     <action selector="switchUseLocation:" destination="BYZ-38-t0r" eventType="valueChanged" id="wGq-PK-BWd"/>
                                 </connections>
                             </switch>
@@ -115,7 +108,6 @@
                                 <rect key="frame" x="105" y="408" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
-                                    <action selector="switchSaveData:" destination="BYZ-38-t0r" eventType="valueChanged" id="Mc6-VH-YDb"/>
                                     <action selector="switchSaveLocation:" destination="BYZ-38-t0r" eventType="valueChanged" id="iae-MB-UyW"/>
                                 </connections>
                             </switch>
@@ -159,7 +151,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="viewResults" translatesAutoresizingMaskIntoConstraints="NO" id="odn-uH-sZG" userLabel="viewResults">
-                                <rect key="frame" x="23" y="185" width="369" height="477"/>
+                                <rect key="frame" x="7" y="601" width="369" height="477"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sky" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBg-wh-Okl">
@@ -342,6 +334,12 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="btnReset" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Li-uV-qAr" userLabel="btnReset">
+                                <rect key="frame" x="255" y="302" width="95" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Reset Data"/>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>

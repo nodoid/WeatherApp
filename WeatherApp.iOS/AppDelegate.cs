@@ -35,8 +35,6 @@ namespace WeatherApp.iOS
             weatherViewModel.IsConnected = connnect;
             Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
 
-            GetLocation();
-
             return true;
         }
 
@@ -45,79 +43,7 @@ namespace WeatherApp.iOS
             weatherViewModel.IsConnected = Convert.ToBoolean(e.NetworkAccess);
         }
 
-        void GetLocation()
-        {
-            Task.Run(() =>
-                BeginInvokeOnMainThread(async () =>
-                {
-                    try
-                    {
-                        var status = await Permissions.CheckStatusAsync<Permissions.LocationWhenInUse>();
-                        if (status == PermissionStatus.Granted)
-                        {
-                            messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = true, Message = "Location" });
-                            weatherViewModel.Location = await Geolocation.GetLastKnownLocationAsync();
-                            if (weatherViewModel.Location == null)
-                            {
-                                weatherViewModel.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
-                                {
-                                    DesiredAccuracy = GeolocationAccuracy.Medium,
-                                    Timeout = TimeSpan.FromSeconds(15)
-                                });
-                                weatherViewModel.CanUseGeoloc = true;
-                            }
-                        }
-                        else
-                        {
-                            status = await Permissions.RequestAsync<Permissions.LocationWhenInUse>();
-                            if (status == PermissionStatus.Granted)
-                            {
-                                messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = true, Message = "Location" });
-                                weatherViewModel.Location = await Geolocation.GetLastKnownLocationAsync();
-                                if (weatherViewModel.Location == null)
-                                {
-                                    weatherViewModel.Location = await Geolocation.GetLocationAsync(new GeolocationRequest
-                                    {
-                                        DesiredAccuracy = GeolocationAccuracy.Medium,
-                                        Timeout = TimeSpan.FromSeconds(15)
-                                    });
-                                    weatherViewModel.CanUseGeoloc = true;
-                                }
-                            }
-                            else
-                            {
-                                messenger.Send<BooleanMessage>(new BooleanMessage { BoolValue = false, Message = "Location" });
-                                weatherViewModel.CanUseGeoloc = false;
-                            }
-                        }
-                    }
-                    catch (FeatureNotSupportedException fnsEx)
-                    {
-#if DEBUG
-                        Console.WriteLine($"Not supported : {fnsEx.Message}--{fnsEx.InnerException?.Message}");
-#endif
-                    }
-                    catch (PermissionException pEx)
-                    {
-#if DEBUG
-                        Console.WriteLine($"Failed permission - {pEx.Message}--{pEx.InnerException?.Message}");
-#endif
-                    }
-                    catch (Exception ex)
-                    {
-                        ShowError(ex.ToString());
-                    }
-                }));
-        }
-
-        void ShowError(string message = "")
-        {
-            var alert = UIAlertController.Create("Error", string.IsNullOrEmpty(message) ? "The City and Country must be filled in" : message, UIAlertControllerStyle.Alert);
-            alert.AddAction(UIAlertAction.Create("OK", UIAlertActionStyle.Default, null));
-            alert.PresentViewController(alert, animated: true, completionHandler: null); ;
-        }
-
-            // UISceneSession Lifecycle
+       // UISceneSession Lifecycle
 
             [Export ("application:configurationForConnectingSceneSession:options:")]
         public UISceneConfiguration GetConfiguration (UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options)
