@@ -19,7 +19,6 @@ namespace WeatherApp.iOS
         public UIWindow Window { get; set; }
         public static IServiceProvider Service { get; set; }
         IMessenger messenger => (IMessenger)Startup.ServiceProvider.GetService(typeof(IMessenger));
-        BaseViewModel viewModel { get; set; }
         WeatherViewModel weatherViewModel { get; set; }
 
         public static AppDelegate Self { get; private set; }
@@ -33,7 +32,7 @@ namespace WeatherApp.iOS
             Service = WeatherApp.Startup.Init ();
             weatherViewModel = Service.GetService<WeatherViewModel> ();
             var connnect = (Connectivity.NetworkAccess == NetworkAccess.Internet) || (Connectivity.NetworkAccess == NetworkAccess.Local);
-            viewModel.IsConnected = connnect;
+            weatherViewModel.IsConnected = connnect;
             Connectivity.ConnectivityChanged += Connectivity_ConnectivityChanged;
 
             GetLocation();
@@ -43,7 +42,7 @@ namespace WeatherApp.iOS
 
         void Connectivity_ConnectivityChanged(object sender, ConnectivityChangedEventArgs e)
         {
-            viewModel.IsConnected = Convert.ToBoolean(e.NetworkAccess);
+            weatherViewModel.IsConnected = Convert.ToBoolean(e.NetworkAccess);
         }
 
         void GetLocation()
