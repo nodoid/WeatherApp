@@ -47,9 +47,6 @@
                                 <accessibility key="accessibilityConfiguration" identifier="txtCity"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <action selector="txtCity:" destination="BYZ-38-t0r" eventType="editingDidEnd" id="OW7-Ed-fzT"/>
-                                </connections>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="txtState" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AkX-J8-2EM" userLabel="txtState">
                                 <rect key="frame" x="167" y="102" width="97" height="34"/>
@@ -57,10 +54,6 @@
                                 <accessibility key="accessibilityConfiguration" identifier="txtState"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <action selector="lblState:" destination="BYZ-38-t0r" eventType="editingDidEnd" id="dDQ-4Z-jfE"/>
-                                    <action selector="txtState:" destination="BYZ-38-t0r" eventType="editingDidEnd" id="kaP-wm-sET"/>
-                                </connections>
                             </textField>
                             <textField opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="txtCountry" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yqx-S5-uM7" userLabel="txtCountry">
                                 <rect key="frame" x="297" y="102" width="97" height="34"/>
@@ -68,34 +61,22 @@
                                 <accessibility key="accessibilityConfiguration" identifier="txtCountry"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <action selector="txtCountry:" destination="BYZ-38-t0r" eventType="editingDidEnd" id="qwI-Hn-RyF"/>
-                                </connections>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="btnGetWeather" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="33a-59-2PP" userLabel="btnGetWeather">
                                 <rect key="frame" x="171" y="246" width="106" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Get Weather"/>
-                                <connections>
-                                    <action selector="btnGetWeather:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3a6-Rz-Fvt"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="btnResetLoc" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="phE-Wy-GH9" userLabel="btnResetLoc">
                                 <rect key="frame" x="69" y="302" width="120" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
                                 <buttonConfiguration key="configuration" style="filled" title="Reset Location"/>
-                                <connections>
-                                    <action selector="btnResetLocation:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ojE-7e-AZF"/>
-                                </connections>
                             </button>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" restorationIdentifier="switchCurrentLoc" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9En-hV-CZc" userLabel="switchCurrentLoc">
                                 <rect key="frame" x="105" y="369" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <connections>
-                                    <action selector="switchUseLocation:" destination="BYZ-38-t0r" eventType="valueChanged" id="wGq-PK-BWd"/>
-                                </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Use current location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qFg-ue-X5K">
                                 <rect key="frame" x="171" y="374" width="154" height="21"/>
@@ -107,9 +88,6 @@
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" restorationIdentifier="switchSave" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Cec-l9-Odn" userLabel="switchSave">
                                 <rect key="frame" x="105" y="408" width="49" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <connections>
-                                    <action selector="switchSaveLocation:" destination="BYZ-38-t0r" eventType="valueChanged" id="iae-MB-UyW"/>
-                                </connections>
                             </switch>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Save location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ame-6f-Ts0">
                                 <rect key="frame" x="171" y="413" width="102" height="21"/>
@@ -150,8 +128,14 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="btnReset" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Li-uV-qAr" userLabel="btnReset">
+                                <rect key="frame" x="255" y="302" width="95" height="31"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="filled" title="Reset Data"/>
+                            </button>
                             <view hidden="YES" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="viewResults" translatesAutoresizingMaskIntoConstraints="NO" id="odn-uH-sZG" userLabel="viewResults">
-                                <rect key="frame" x="7" y="601" width="369" height="477"/>
+                                <rect key="frame" x="20" y="226" width="369" height="477"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Sky" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mBg-wh-Okl">
@@ -243,9 +227,6 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <state key="normal" title="Button"/>
                                         <buttonConfiguration key="configuration" style="plain" title="OK"/>
-                                        <connections>
-                                            <action selector="btnOK:" destination="BYZ-38-t0r" eventType="touchUpInside" id="FOT-hZ-ZVa"/>
-                                        </connections>
                                     </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" restorationIdentifier="lblTemp" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="avk-Y0-zjm" userLabel="lblTemp">
                                         <rect key="frame" x="163" y="66" width="42" height="21"/>
@@ -334,12 +315,6 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" restorationIdentifier="btnReset" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Li-uV-qAr" userLabel="btnReset">
-                                <rect key="frame" x="255" y="302" width="95" height="31"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="filled" title="Reset Data"/>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
