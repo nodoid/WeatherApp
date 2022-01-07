@@ -349,7 +349,6 @@
                         <outlet property="btnGetWeather" destination="33a-59-2PP" id="P9C-64-8bQ"/>
                         <outlet property="btnOK" destination="a5N-Nj-RJ9" id="tCy-hM-3Gf"/>
                         <outlet property="btnReset" destination="1Li-uV-qAr" id="ZgC-e5-zLy"/>
-                        <outlet property="btnResetData" destination="odn-uH-sZG" id="8cq-06-53z"/>
                         <outlet property="btnResetLocation" destination="phE-Wy-GH9" id="OlX-Pi-JIw"/>
                         <outlet property="lblDegrees" destination="UGk-jt-Vm5" id="8Rq-Ph-rUx"/>
                         <outlet property="lblGeolocation" destination="bG1-Zj-dM1" id="4SG-6y-gMI"/>
@@ -359,16 +358,12 @@
                         <outlet property="lblSky" destination="dIs-FE-LLU" id="1su-cw-K0Z"/>
                         <outlet property="lblSpeed" destination="hIE-SW-g3F" id="uS2-pd-20A"/>
                         <outlet property="lblSunUp" destination="DdD-pO-gdH" id="d5I-EE-4Xh"/>
-                        <outlet property="lblSunrise" destination="DdD-pO-gdH" id="name-outlet-18"/>
                         <outlet property="lblSunset" destination="3P7-tv-KXl" id="axw-DQ-cLO"/>
                         <outlet property="lblTemp" destination="avk-Y0-zjm" id="Fm0-wf-6zd"/>
                         <outlet property="lblTempMax" destination="MlD-uy-eOk" id="10X-vf-MdG"/>
                         <outlet property="lblTempMin" destination="Sem-Pg-TmU" id="IBZ-cz-X5L"/>
                         <outlet property="lblWind" destination="xOT-tv-iiY" id="0Sx-Lw-Mqn"/>
                         <outlet property="spinProgress" destination="UVt-ov-Y1E" id="roA-Dh-0C7"/>
-                        <outlet property="switchCurrentLoc" destination="9En-hV-CZc" id="XK7-e6-5Ly"/>
-                        <outlet property="switchCurrntLoc" destination="9En-hV-CZc" id="name-outlet-7"/>
-                        <outlet property="switchSave" destination="Cec-l9-Odn" id="gDv-Pq-z6a"/>
                         <outlet property="switchSaveLocation" destination="Cec-l9-Odn" id="zsU-3w-XEV"/>
                         <outlet property="switchUseLocation" destination="9En-hV-CZc" id="eGg-2Y-OJs"/>
                         <outlet property="txtCity" destination="Cw7-Ng-Ox2" id="oOv-qK-xdf"/>
