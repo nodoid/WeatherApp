@@ -48,14 +48,14 @@ namespace WeatherApp.iOS
 
             messenger.Register<StringMessage>(this, (m, t) => ShowError(t.Message));
 
-            switchCurrentLoc.ValueChanged += (o, e) =>
+            switchUseLocation.ValueChanged += (o, e) =>
             {
                 if (ViewModel.CanUseGeoloc)
                     ViewModel.CanUseGeoloc = ((UISwitch)o).On;
             };
-            switchSave.ValueChanged += (o, e) => ViewModel.UserOnStartup = ((UISwitch)o).On;
-            btnResetLoc.TouchUpInside += (o, e) => ViewModel.ResetLocation = true;
-            btnResetData.TouchUpInside += (o, e) => ViewModel.ResetData = true;
+            switchSaveLocation.ValueChanged += (o, e) => ViewModel.UserOnStartup = ((UISwitch)o).On;
+            btnResetLocation.TouchUpInside += (o, e) => ViewModel.ResetLocation = true;
+            btnReset.TouchUpInside += (o, e) => ViewModel.ResetData = true;
 
             btnGetWeather.TouchUpInside += (o, e) =>
             {
@@ -65,14 +65,14 @@ namespace WeatherApp.iOS
                     ViewModel.GetDataForCity.Execute(null);
             };
 
-            txtCity.Changed += (o, e) => ViewModel.City = ((UITextView)o).Text;
-            txtState.Changed += (o, e) => ViewModel.State = ((UITextView)o).Text;
-            txtCountry.Changed += (o, e) => ViewModel.Country = ((UITextView)o).Text;
+            txtCity.ValueChanged += (o, e) => ViewModel.City = ((UITextView)o).Text;
+            txtState.ValueChanged += (o, e) => ViewModel.State = ((UITextView)o).Text;
+            txtCountry.ValueChanged += (o, e) => ViewModel.Country = ((UITextView)o).Text;
 
             ViewModel.Setup();
 
-            switchSave.On = ViewModel.UserOnStartup;
-            switchCurrentLoc.On = ViewModel.CanUseGeoloc;
+            switchSaveLocation.On = ViewModel.UserOnStartup;
+            switchUseLocation.On = ViewModel.CanUseGeoloc;
 
             spinProgress.Hidden = true;
         }
@@ -86,7 +86,7 @@ namespace WeatherApp.iOS
             lblTempMax.Text = (WeatherData.Main.TempMax - 273.15).ToString("n2");
             lblPressure.Text = $"{WeatherData.Main.Pressure}";
             lblHumid.Text = $"{WeatherData.Main.Humidity}";
-            lblSunrise.Text = $"{ConvertFromEpoch(WeatherData.Sys.Sunrise)}";
+            lblSunUp.Text = $"{ConvertFromEpoch(WeatherData.Sys.Sunrise)}";
             lblSunset.Text = $"{ConvertFromEpoch(WeatherData.Sys.Sunset)}";
             lblSpeed.Text = $"{WeatherData.Wind.Speed}";
             lblDegrees.Text = $"{WeatherData.Wind.Deg}";
