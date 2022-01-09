@@ -93,6 +93,7 @@ namespace WeatherApp.iOS
 
         void ShowLightboxDialog()
         {
+            viewResults.Hidden = false;
             btnOK.TouchUpInside += (o, e) => DismissLightbox();
             lblSky.Text = WeatherData.Weather[0].Description;
             lblTemp.Text = (WeatherData.Main.Temp - 273.15).ToString("n2");
