@@ -72,8 +72,8 @@ namespace WeatherApp.ViewModels
             set => SetProperty(ref geoloc, value);
         }
 
-        UserSettings UserSettings { get; set; }
-        public WeatherData WeatherData { get; set; }
+        UserSettings? UserSettings { get; set; }
+        public WeatherData? WeatherData { get; set; }
 
         bool showData;
         public bool ShowData
@@ -82,21 +82,21 @@ namespace WeatherApp.ViewModels
             set => SetProperty(ref showData, value);
         }
 
-        string city;
+        string? city;
         public string City
         {
             get => city;
             set => SetProperty(ref city, value);
         }
 
-        string state;
+        string? state;
         public string State
         {
             get => state;
             set => SetProperty(ref state, value);
         }
 
-        string country;
+        string? country;
         public string Country
         {
             get => country;
@@ -115,7 +115,7 @@ namespace WeatherApp.ViewModels
             }
         }
 
-        Location location;
+        Location? location;
         public Location Location
         {
             get => location;
