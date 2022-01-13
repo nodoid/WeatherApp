@@ -62,6 +62,7 @@ namespace WeatherApp.Tests.Models
             Assert.AreEqual(200, result.Cod);
         }
 
+        [Test]
         public void InvalidLocationTest()
         {
             var text = @"{
