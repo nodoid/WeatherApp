@@ -20,7 +20,7 @@ namespace WeatherApp.Database
         public const string DBClauseVacuum = "VACUUM;";
         public SqLiteRepository()
         {
-            connection = WeatherApp.Constants.Constants.DBConnection;
+            connection = Constants.Constants.DBConnection;
             CreateTables();
             dbLock = new object();
         }
@@ -203,7 +203,6 @@ namespace WeatherApp.Database
             var sql = string.Format("SELECT * FROM {0} WHERE {1}={2}", GetName(typeof(T).ToString()), p, val);
             var list = connection.Query<T>(sql, string.Empty);
             return list.Count;
-
         }
     }
 }
