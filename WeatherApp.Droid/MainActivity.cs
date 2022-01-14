@@ -21,19 +21,15 @@ namespace WeatherApp.Droid
     public class MainActivity : AppCompatActivity
     {
         public static IServiceProvider Service { get; set; }
-
         IMessenger messenger => (IMessenger)Startup.ServiceProvider.GetService(typeof(IMessenger));
         bool Busy { get; set; }
         WeatherData WeatherData { get; set; }
-
         Dialog ModalDialog;
         ProgressBar ProgressBar;
         TextView locPlace, locGeoplace;
         CheckBox loc;
-
         WeatherViewModel ViewModel { get; set; }
         BaseViewModel BaseViewModel { get; set; }
-
         Context context;
 
         protected override void OnCreate(Bundle savedInstanceState)
@@ -249,7 +245,6 @@ namespace WeatherApp.Droid
                 DismissLightboxDialog();
             };
         }
-
 
         string ConvertFromEpoch(int epoch) => new DateTime(1970,1,1,0,0,0,DateTimeKind.Utc).AddSeconds(epoch).ToShortTimeString();
 

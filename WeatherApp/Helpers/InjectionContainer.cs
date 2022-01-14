@@ -30,6 +30,5 @@ namespace WeatherApp.Helpers
 
             return services;
         }
-
     }
 }

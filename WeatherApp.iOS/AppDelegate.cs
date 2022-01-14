@@ -20,7 +20,6 @@ namespace WeatherApp.iOS
         public static IServiceProvider Service { get; set; }
         IMessenger messenger => (IMessenger)Startup.ServiceProvider.GetService(typeof(IMessenger));
         WeatherViewModel weatherViewModel { get; set; }
-
         public static AppDelegate Self { get; private set; }
 
         [Export ("application:didFinishLaunchingWithOptions:")]
@@ -44,8 +43,7 @@ namespace WeatherApp.iOS
         }
 
        // UISceneSession Lifecycle
-
-            [Export ("application:configurationForConnectingSceneSession:options:")]
+       [Export ("application:configurationForConnectingSceneSession:options:")]
         public UISceneConfiguration GetConfiguration (UIApplication application, UISceneSession connectingSceneSession, UISceneConnectionOptions options)
         {
             // Called when a new scene session is being created.

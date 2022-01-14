@@ -13,7 +13,6 @@ namespace WeatherApp.iOS
     {
         IMessenger messenger => (IMessenger)Startup.ServiceProvider.GetService(typeof(IMessenger));
         WeatherViewModel ViewModel { get; set; }
-
         bool Busy { get; set; }
         WeatherData WeatherData { get; set; }
 
@@ -57,8 +56,11 @@ namespace WeatherApp.iOS
                 if (ViewModel.CanUseGeoloc)
                     ViewModel.CanUseGeoloc = ((UISwitch)o).On;
             };
+
             switchSaveLocation.ValueChanged += (o, e) => ViewModel.UserOnStartup = ((UISwitch)o).On;
+
             btnResetLocation.TouchUpInside += (o, e) => ViewModel.ResetLocation = true;
+
             btnReset.TouchUpInside += (o, e) => ViewModel.ResetData = true;
 
             btnGetWeather.TouchUpInside += (o, e) =>
@@ -70,8 +72,11 @@ namespace WeatherApp.iOS
             };
 
             txtCity.ValueChanged += (o, e) => ViewModel.City = ((UITextView)o).Text;
+
             txtState.ValueChanged += (o, e) => ViewModel.State = ((UITextView)o).Text;
+
             txtCountry.ValueChanged += (o, e) => ViewModel.Country = ((UITextView)o).Text;
+
             lblPlace.Text = lblGeolocation.Text = "";
 
             ViewModel.Setup();
@@ -86,6 +91,7 @@ namespace WeatherApp.iOS
 
         void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            spinProgress.Hidden = !ViewModel.IsBusy;
             lblPlace.Text = ViewModel.PlaceName;
             lblGeolocation.Text = ViewModel.Geoloc;
             switchUseLocation.On = ViewModel.CanUseGeoloc;

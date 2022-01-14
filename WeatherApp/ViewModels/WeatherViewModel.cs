@@ -71,7 +71,6 @@ namespace WeatherApp.ViewModels
             get => geoloc;
             set => SetProperty(ref geoloc, value);
         }
-
         UserSettings? UserSettings { get; set; }
         public WeatherData? WeatherData { get; set; }
 
@@ -180,7 +179,6 @@ namespace WeatherApp.ViewModels
             get => userOnStartup;
             set => SetProperty(ref userOnStartup, value);
         }
-
         void DisplayPlace()
         {
             PlaceName = $"{WeatherData.Name}";
@@ -188,7 +186,6 @@ namespace WeatherApp.ViewModels
             PlaceName += WeatherData.Sys.Country;
             Geoloc = $"lat = {WeatherData.Coord.Lat}, lng = {WeatherData.Coord.Lon}";
         }
-
         void SaveSettings()
         {
             if (City == UserSettings.CityName)

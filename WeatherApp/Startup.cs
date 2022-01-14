@@ -17,8 +17,5 @@ namespace WeatherApp
 
             return provider;
         }
-
-
-
     }
 }
