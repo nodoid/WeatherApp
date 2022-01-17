@@ -21,18 +21,18 @@ namespace WeatherApp.Tests.Services
         IConnection Connection = Substitute.For<IConnection>();
 
         [Test]
-        public async Task TestGetWeatherForCity(string city, string country, string state = "")
+        public async Task Test_GetWeatherForCity(string city, string country, string state = "")
         {
             var api = "q=";
             var pars = string.IsNullOrEmpty(state) ? $"{city},{country}" : $"{city},{state},{country}";
-            var data = await TestGetRequestAsync<WeatherData>(api, pars);
+            var data = await Test_GetRequestAsync<WeatherData>(api, pars);
             Assert.IsNotNull(data);
             Assert.Equals("Liverpool", data.Name);
         }
 
-        async Task<T1> TestGetRequestAsync<T1>(string api, string pars)
+        async Task<T1> Test_GetRequestAsync<T1>(string api, string pars)
         {
-            return await TestGetRequestAsync<T1>(api, pars);
+            return await Test_GetRequestAsync<T1>(api, pars);
         }
 
         [Test]
@@ -40,14 +40,14 @@ namespace WeatherApp.Tests.Services
         {
             var api = "lat=";
             var pars = $"{lat}&lon={lng}";
-            var data = await TestGetRequestAsync<WeatherData>(api, pars);
+            var data = await Test_GetRequestAsync<WeatherData>(api, pars);
             Assert.IsNotNull(data);
             Assert.Equals("Liverpool", data.Name);
         }
 
 
         [Test]
-        public void TestClientTestIsNotNull(HttpMessageHandler httpMessageHandler)
+        public void Test_ClientTestIsNotNull(HttpMessageHandler httpMessageHandler)
         {
             Assert.IsNotNull(httpMessageHandler);
             var client = new HttpClient(httpMessageHandler)
@@ -62,7 +62,7 @@ namespace WeatherApp.Tests.Services
         }
 
         [Test]
-        public async Task<T> TestGetRequestAsync(string apiUrl, string pars)
+        public async Task<T> Test_GetRequestAsync(string apiUrl, string pars)
         {
             var result = Activator.CreateInstance<T>();
             Assert.IsNotNull(result);
@@ -90,7 +90,113 @@ namespace WeatherApp.Tests.Services
                 var res = await send.Content.ReadAsStringAsync();
                 result = JsonConvert.DeserializeObject<T>(res);
             }
-            
+
+            Assert.Equals(401, send.StatusCode);
+            Assert.IsNotNull(result);
+
+            return result;
+        }
+
+        [Test]
+        public async Task<T> Test_GetRequestAsync_Returns401(string apiUrl, string pars)
+        {
+            var result = Activator.CreateInstance<T>();
+            Assert.IsNotNull(result);
+            Assert.IsTrue(Connection.NetworkConnected());
+
+            Assert.IsNotNullOrEmpty(pars);
+            Assert.IsNotNullOrEmpty(apiUrl);
+            Assert.IsNotNullOrEmpty(Constants.Constants.BaseUri);
+            Assert.IsNotNullOrEmpty(Constants.Constants.APIKey);
+
+            var request = new Mock<HttpMessageHandler>(HttpMethod.Get, $"1{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+            request.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(new MockWeatherData().ToString())
+            });
+
+            var httpClient = new HttpClient(request.Object);
+            var send = await httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+
+            if (send.StatusCode == HttpStatusCode.OK)
+            {
+                var res = await send.Content.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<T>(res);
+            }
+
+            Assert.Equals(404, send.StatusCode);
+            Assert.IsNotNull(result);
+
+            return result;
+        }
+
+        public async Task<T> Test_GetRequestAsync_Returns404(string apiUrl, string pars)
+        {
+            var result = Activator.CreateInstance<T>();
+            Assert.IsNotNull(result);
+            Assert.IsTrue(Connection.NetworkConnected());
+
+            Assert.IsNotNullOrEmpty(pars);
+            Assert.IsNotNullOrEmpty(apiUrl);
+            Assert.IsNotNullOrEmpty(Constants.Constants.BaseUri);
+
+            var request = new Mock<HttpMessageHandler>(HttpMethod.Get, $"1{Constants.Constants.BaseUri}");
+            request.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(new MockWeatherData().ToString())
+            });
+
+            var httpClient = new HttpClient(request.Object);
+            var send = await httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+
+            if (send.StatusCode == HttpStatusCode.OK)
+            {
+                var res = await send.Content.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<T>(res);
+            }
+
+            Assert.IsNotNull(result);
+
+            return result;
+        }
+
+        [Test]
+        [ExpectedException(typeof(JsonException))]
+        public async Task<T> Test_GetRequestAsync_Exception(string apiUrl, string pars)
+        {
+            var result = Activator.CreateInstance<T>();
+            Assert.IsNotNull(result);
+            Assert.IsTrue(Connection.NetworkConnected());
+
+            Assert.IsNotNullOrEmpty(pars);
+            Assert.IsNotNullOrEmpty(apiUrl);
+            Assert.IsNotNullOrEmpty(Constants.Constants.BaseUri);
+
+            var request = new Mock<HttpMessageHandler>(HttpMethod.Get, $"1{Constants.Constants.BaseUri}");
+            request.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(new MockWeatherData().ToString())
+            });
+
+            var httpClient = new HttpClient(request.Object);
+            var send = await httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+
+            if (send.StatusCode == HttpStatusCode.OK)
+            {
+                var res = await send.Content.ReadAsStringAsync();
+                var r = JsonConvert.DeserializeObject(res);
+                result = r as T;
+            }
+
             Assert.IsNotNull(result);
 
             return result;

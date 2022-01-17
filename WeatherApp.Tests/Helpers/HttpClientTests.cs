@@ -1,5 +1,4 @@
-﻿using Moq;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Linq;
 using WeatherApp.Helpers;
 
@@ -9,14 +8,14 @@ namespace WeatherApp.Tests.Helpers
     public class HttpClientTests
     {
         [Test]
-        public void TestSetup()
+        public void TestSetup_NoParameters()
         {
             var test = new HttpClientHelper().SetupClient();
             Assert.IsNotNull(test);
         }
 
         [Test]
-        public void TestSetupTimeouWithValueIsMinutesFalse()
+        public void TestSetup_TimeouWithValue_IsMinutesFalse()
         {
             var test = new HttpClientHelper().SetupClient(1, false);
             Assert.IsNotNull(test);
@@ -24,7 +23,7 @@ namespace WeatherApp.Tests.Helpers
         }
 
         [Test]
-        public void TestSetupTimeouWithValueIsMinutesTrue()
+        public void TestSetup_TimeouWithValue_IsMinutesTrue()
         {
             var test = new HttpClientHelper().SetupClient(2);
             Assert.IsNotNull(test);
@@ -32,7 +31,7 @@ namespace WeatherApp.Tests.Helpers
         }
 
         [Test]
-        public void TestSetupWithAcceptMediaNoType()
+        public void TestSetup_WithAcceptMediaNoType()
         {
             var test = new HttpClientHelper().SetupClient(3, false, true);
             Assert.IsNotNull(test);
@@ -41,7 +40,7 @@ namespace WeatherApp.Tests.Helpers
         }
 
         [Test]
-        public void TestSetupWithAcceptMediaAndType()
+        public void TestSetup_WithAcceptMediaAndType()
         {
             var test = new HttpClientHelper().SetupClient(4, false, true, "application/json");
             Assert.IsNotNull(test);

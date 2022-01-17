@@ -4,6 +4,6 @@ namespace WeatherApp.Tests.Interfaces
 {
     public interface IClientApi<T>
     {
-        Task<T> TestGetRequestAsync(string apiUrl, string pars = "");
+        Task<T> Test_GetRequestAsync(string apiUrl, string pars = "");
     }
 }
