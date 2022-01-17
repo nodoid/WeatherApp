@@ -1,4 +1,5 @@
-﻿using NSubstitute;
+﻿using Moq;
+using NSubstitute;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using WeatherApp.Database;
@@ -34,7 +35,7 @@ namespace WeatherApp.Tests.ViewModels
         }
 
         [Test]
-        public void TestUserSettingsNotNull()
+        public void Test_UserSettings_NotNull()
         {
             var user = sqliteRepo.GetData<UserSettings, int>("Id", 0);
             Assert.IsNotNull(user);
@@ -44,7 +45,7 @@ namespace WeatherApp.Tests.ViewModels
         }
 
         [Test]
-        public async Task TestUserSettingsNotNullCallGetCity()
+        public async Task Test_UserSettings_NotNull_CallGetCity()
         {
             var user = sqliteRepo.GetData<UserSettings, int>("Id", 0);
             Assert.IsNotNull(user);
@@ -72,7 +73,7 @@ namespace WeatherApp.Tests.ViewModels
         }
 
         [Test]
-        public async Task TestUserSettingsNotNullCallFromLocation()
+        public async Task Test_UserSettings_NotNull_CallFromLocation()
         {
             var user = sqliteRepo.GetData<UserSettings, int>("Id",0 );
             Assert.IsNotNull(user);
@@ -90,7 +91,7 @@ namespace WeatherApp.Tests.ViewModels
         }
 
         [Test]
-        public void TestSaveSettings()
+        public void Test_SaveSettings()
         {
             Assert.Equals("Liverppol", WeatherData.Name);
             if (WeatherData.Name.Equals("Liverpool")) 
@@ -116,7 +117,7 @@ namespace WeatherApp.Tests.ViewModels
         }
 
         [Test]
-        public void TestUserSettingsNull()
+        public void Test_UserSettings_Null()
         {
             var user = sqliteRepo.GetData<UserSettings, int>("Id", 1);
             Assert.IsNull(user);
