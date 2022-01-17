@@ -1,27 +1,23 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
-using NSubstitute;
+﻿using NSubstitute;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using WeatherApp.Database;
 using WeatherApp.Interfaces;
 using WeatherApp.Models;
-using WeatherApp.ViewModels;
 
 namespace WeatherApp.Tests.ViewModels
 {
-    
-
     public class WeatherViewModelTests : ViewModelTestFixtureBase
     {
         readonly IRepository repository = Substitute.For<IRepository>();
         readonly IWeatherService webservice = Substitute.For<IWeatherService>();
-        readonly IMessenger messenger = Substitute.For<IMessenger>();
         WeatherData WeatherData { get; set; }
+        SqLiteRepository sqliteRepo { get; set; }
 
         [SetUp]
         public void Setup()
         {
-            var sqliteRepo = new SqLiteRepository();
+            sqliteRepo = new SqLiteRepository();
             sqliteRepo.SaveData(new UserSettings
             {
                 AutoOnStart = false,
@@ -56,6 +52,7 @@ namespace WeatherApp.Tests.ViewModels
             Assert.AreEqual(53.243809, user.LastLat);
 
             var state = string.IsNullOrEmpty(user.USState) ? "" : user.USState;
+            Assert.IsNullOrEmpty(state);
 
             if (!string.IsNullOrEmpty(user.CityName) && !string.IsNullOrEmpty(user.Country))
             {
@@ -68,6 +65,7 @@ namespace WeatherApp.Tests.ViewModels
 
                 var data = await webservice.GetWeatherForCity(user.CityName, user.Country, state);
                 Assert.IsNotNull(data);
+                Assert.Equals("Liverpool", data.Name);
                 WeatherData = data;
             }
         }
@@ -85,13 +83,15 @@ namespace WeatherApp.Tests.ViewModels
             if (data != null)
             {
                 Assert.IsNotNull(data);
+                Assert.Equals(53.243809, data.Coord.Lat);
                 WeatherData = data;
             }
         }
 
         [Test]
-        public void SaveSettings()
+        public void TestSaveSettings()
         {
+            Assert.Equals("Liverppol", WeatherData.Name);
             if (WeatherData.Name.Equals("Liverpool")) 
             {
                 var userData = new UserSettings
@@ -100,7 +100,7 @@ namespace WeatherApp.Tests.ViewModels
                     CanUseGeolocation = true,
                     CityName = "Liverpool",
                     Country = "UK",
-                    Id = 0,
+                    Id = 3,
                     IsUSState = false,
                     USState = "",
                     LastLat = 53.243809,
@@ -108,6 +108,9 @@ namespace WeatherApp.Tests.ViewModels
                 };
 
                 repository.SaveData(userData);
+                var dataBack = repository.GetData<UserSettings, int>("Id", 3);
+                Assert.IsNotNull(dataBack);
+                Assert.Equals(-2.584058, dataBack.LastLng);
             }
         }
 
