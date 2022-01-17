@@ -7,15 +7,15 @@ using WeatherApp.Models;
 
 namespace WeatherApp.Tests.ViewModels
 {
+    [TestFixture]
     public class WeatherViewModelTests : ViewModelTestFixtureBase
     {
-        readonly IRepository repository = Substitute.For<IRepository>();
         readonly IWeatherService webservice = Substitute.For<IWeatherService>();
         WeatherData WeatherData { get; set; }
         SqLiteRepository sqliteRepo { get; set; }
 
         [SetUp]
-        public void Setup()
+        public void SetupViewModelTest()
         {
             sqliteRepo = new SqLiteRepository();
             sqliteRepo.SaveData(new UserSettings
@@ -30,12 +30,13 @@ namespace WeatherApp.Tests.ViewModels
                 LastLat = 53.243809,
                 LastLng = -2.584058
             });
+            var test = sqliteRepo.GetData<UserSettings, int>("Id", 0);
         }
 
         [Test]
-        public void SetupTestUserSettingsNotNull()
+        public void TestUserSettingsNotNull()
         {
-            var user = repository.GetData<UserSettings, int>("Id", 0);
+            var user = sqliteRepo.GetData<UserSettings, int>("Id", 0);
             Assert.IsNotNull(user);
             Assert.AreEqual("Liverpool", user.CityName);
             Assert.AreEqual("0", user.Id);
@@ -43,9 +44,9 @@ namespace WeatherApp.Tests.ViewModels
         }
 
         [Test]
-        public async Task SetupTestUserSettingsNotNullCallGetCity()
+        public async Task TestUserSettingsNotNullCallGetCity()
         {
-            var user = repository.GetData<UserSettings, int>("Id", 0);
+            var user = sqliteRepo.GetData<UserSettings, int>("Id", 0);
             Assert.IsNotNull(user);
             Assert.AreEqual("Liverpool", user.CityName);
             Assert.AreEqual("0", user.Id);
@@ -71,9 +72,9 @@ namespace WeatherApp.Tests.ViewModels
         }
 
         [Test]
-        public async Task SetupTestUserSettingsNotNullCallFromLocation()
+        public async Task TestUserSettingsNotNullCallFromLocation()
         {
-            var user = repository.GetData<UserSettings, int>("Id",0 );
+            var user = sqliteRepo.GetData<UserSettings, int>("Id",0 );
             Assert.IsNotNull(user);
             Assert.AreEqual("Liverpool", user.CityName);
             Assert.AreEqual("0", user.Id);
@@ -107,19 +108,18 @@ namespace WeatherApp.Tests.ViewModels
                     LastLng = -2.584058
                 };
 
-                repository.SaveData(userData);
-                var dataBack = repository.GetData<UserSettings, int>("Id", 3);
+                sqliteRepo.SaveData(userData);
+                var dataBack = sqliteRepo.GetData<UserSettings, int>("Id", 3);
                 Assert.IsNotNull(dataBack);
                 Assert.Equals(-2.584058, dataBack.LastLng);
             }
         }
 
         [Test]
-        public void SetupTestUserSettingsNull()
+        public void TestUserSettingsNull()
         {
-            var user = repository.GetData<UserSettings, int>("Id", 1);
+            var user = sqliteRepo.GetData<UserSettings, int>("Id", 1);
             Assert.IsNull(user);
         }
-
     }
 }

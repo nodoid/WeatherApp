@@ -1,80 +1,68 @@
-﻿using Flurl.Http;
-using Flurl.Http.Testing;
+﻿using Moq;
+using Moq.Protected;
 using Newtonsoft.Json;
+using NSubstitute;
 using NUnit.Framework;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
 using WeatherApp.Models;
 using WeatherApp.Tests.Interfaces;
+using WeatherApp.Tests.Models;
 
 namespace WeatherApp.Tests.Services
 {
     [TestFixture]
     public class WeatherServiceTest<T> : IClientApi<T> where T : class
     {
-        HttpClient Client;
-        IConnection Connection;
-
-        public WeatherServiceTest(HttpMessageHandler httpMessageHandler, IConnection connection)
-        {
-            Client = SetupClientTest(httpMessageHandler);
-            Connection = connection;
-            Assert.IsNotNull(Connection);
-            Assert.IsNotNull(Client);
-        }
+        IConnection Connection = Substitute.For<IConnection>();
 
         [Test]
-        public async Task GetWeatherForCity(string city, string country, string state = "")
+        public async Task TestGetWeatherForCity(string city, string country, string state = "")
         {
             var api = "q=";
             var pars = string.IsNullOrEmpty(state) ? $"{city},{country}" : $"{city},{state},{country}";
-            var data = await GetRequestAsync<WeatherData>(api, pars);
+            var data = await TestGetRequestAsync<WeatherData>(api, pars);
             Assert.IsNotNull(data);
             Assert.Equals("Liverpool", data.Name);
         }
 
-        async Task<T1> GetRequestAsync<T1>(string api, string pars)
+        async Task<T1> TestGetRequestAsync<T1>(string api, string pars)
         {
-            return await GetRequestAsync<T1>(api, pars);
+            return await TestGetRequestAsync<T1>(api, pars);
         }
 
         [Test]
-        public async Task GetWeatherForLocation(double lng, double lat)
+        public async Task TestGetWeatherForLocation(double lng, double lat)
         {
             var api = "lat=";
             var pars = $"{lat}&lon={lng}";
-            var data = await GetRequestAsync<WeatherData>(api, pars);
+            var data = await TestGetRequestAsync<WeatherData>(api, pars);
             Assert.IsNotNull(data);
             Assert.Equals("Liverpool", data.Name);
         }
 
-        [Test]
-        public HttpClient SetupClientTest(HttpMessageHandler httpMessageHandler)
-        {
-            Assert.IsNotNull(httpMessageHandler);
-            return new HttpClient(httpMessageHandler);
-        }
-
 
         [Test]
-        public void SetupClientTestIsNotNull(HttpMessageHandler httpMessageHandler)
+        public void TestClientTestIsNotNull(HttpMessageHandler httpMessageHandler)
         {
             Assert.IsNotNull(httpMessageHandler);
-            Client = new HttpClient(httpMessageHandler)
+            var client = new HttpClient(httpMessageHandler)
             {
                 BaseAddress = new Uri(Constants.Constants.BaseUri)
             };
-            Client.DefaultRequestHeaders.Accept.Clear();
-            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            Assert.NotNull(Client.BaseAddress);
-            Assert.Equals(1, Client.DefaultRequestHeaders.Accept.Count);
-            Assert.NotNull(Client);
+            client.DefaultRequestHeaders.Accept.Clear();
+            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            Assert.NotNull(client.BaseAddress);
+            Assert.Equals(1, client.DefaultRequestHeaders.Accept.Count);
+            Assert.NotNull(client);
         }
 
         [Test]
-        public async Task<T> GetRequestAsync(string apiUrl, string pars)
+        public async Task<T> TestGetRequestAsync(string apiUrl, string pars)
         {
             var result = Activator.CreateInstance<T>();
             Assert.IsNotNull(result);
@@ -85,19 +73,25 @@ namespace WeatherApp.Tests.Services
             Assert.IsNotNullOrEmpty(Constants.Constants.BaseUri);
             Assert.IsNotNullOrEmpty(Constants.Constants.APIKey);
 
-            using (var test = new FlurlClient($"{Constants.Constants.BaseUri}"))
+            var request = new Mock<HttpMessageHandler>(HttpMethod.Get, $"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+            request.Protected()
+            .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(new HttpResponseMessage
             {
-                var resp = await test.WithHeaders($"{apiUrl}{pars}&appid={Constants.Constants.APIKey}").
-                    Request(Constants.Constants.BaseUri).
-                    AllowAnyHttpStatus().GetJsonAsync();
-                Assert.NotNull(resp);
-                Assert.Equals(200, resp.StatusCode);
-                Assert.IsNotNullOrEmpty(resp.Content);
-                var data = await resp.Content.ReadAsStringAsync();
-                Assert.NotNull(data);
-                result = JsonConvert.DeserializeObject<T>(data);
-                Assert.NotNull(result);
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(new MockWeatherData().ToString())
+            });
+
+            var httpClient = new HttpClient(request.Object);
+            var send = await httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+
+            if (send.StatusCode == HttpStatusCode.OK)
+            {
+                var res = await send.Content.ReadAsStringAsync();
+                result = JsonConvert.DeserializeObject<T>(res);
             }
+            
+            Assert.IsNotNull(result);
 
             return result;
         }
