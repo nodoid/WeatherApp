@@ -1,5 +1,4 @@
-﻿using Moq;
-using NSubstitute;
+﻿using NSubstitute;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using WeatherApp.Database;
