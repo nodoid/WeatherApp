@@ -8,16 +8,24 @@ using WeatherApp.Models;
 namespace WeatherApp.Tests.ViewModels
 {
     [TestFixture]
-    public class WeatherViewModelTests : ViewModelTestFixtureBase
+    public class WeatherViewModelTests
     {
-        readonly IWeatherService webservice = Substitute.For<IWeatherService>();
+        IWeatherService webservice = Substitute.For<IWeatherService>();
         WeatherData WeatherData { get; set; }
         SqLiteRepository sqliteRepo { get; set; }
 
         [SetUp]
-        public void SetupViewModelTest()
+        public void SetupDatabase()
         {
             sqliteRepo = new SqLiteRepository();
+            var count = sqliteRepo.Count<UserSettings>();
+            if (count != 0)
+                sqliteRepo.DeleteAll();
+        }
+
+        [Test]
+        public void AddUserSettings_ToDB()
+        {
             sqliteRepo.SaveData(new UserSettings
             {
                 AutoOnStart = false,
@@ -30,7 +38,9 @@ namespace WeatherApp.Tests.ViewModels
                 LastLat = 53.243809,
                 LastLng = -2.584058
             });
-            var test = sqliteRepo.GetData<UserSettings, int>("Id", 0);
+            var data = sqliteRepo.Count<UserSettings>();
+
+            Assert.IsNotNull(data);
         }
 
         [Test]
@@ -47,13 +57,8 @@ namespace WeatherApp.Tests.ViewModels
         public async Task Test_UserSettings_NotNull_CallGetCity()
         {
             var user = sqliteRepo.GetData<UserSettings, int>("Id", 0);
-            Assert.IsNotNull(user);
-            Assert.AreEqual("Liverpool", user.CityName);
-            Assert.AreEqual("0", user.Id);
-            Assert.AreEqual(53.243809, user.LastLat);
 
             var state = string.IsNullOrEmpty(user.USState) ? "" : user.USState;
-            Assert.IsNullOrEmpty(state);
 
             if (!string.IsNullOrEmpty(user.CityName) && !string.IsNullOrEmpty(user.Country))
             {
@@ -65,9 +70,9 @@ namespace WeatherApp.Tests.ViewModels
                     user.Country = user.Country.Substring(0, pt);
 
                 var data = await webservice.GetWeatherForCity(user.CityName, user.Country, state);
+                WeatherData = data;
                 Assert.IsNotNull(data);
                 Assert.Equals("Liverpool", data.Name);
-                WeatherData = data;
             }
         }
 
@@ -75,24 +80,19 @@ namespace WeatherApp.Tests.ViewModels
         public async Task Test_UserSettings_NotNull_CallFromLocation()
         {
             var user = sqliteRepo.GetData<UserSettings, int>("Id",0 );
-            Assert.IsNotNull(user);
-            Assert.AreEqual("Liverpool", user.CityName);
-            Assert.AreEqual("0", user.Id);
-            Assert.AreEqual(53.243809, user.LastLat);
 
             var data = await webservice.GetWeatherForLocation(user.LastLng, user.LastLng);
             if (data != null)
             {
+                WeatherData = data;
                 Assert.IsNotNull(data);
                 Assert.Equals(53.243809, data.Coord.Lat);
-                WeatherData = data;
             }
         }
 
         [Test]
-        public void Test_SaveSettings()
+        public void Test_SaveSettings_NameIsLiverpool()
         {
-            Assert.Equals("Liverppol", WeatherData.Name);
             if (WeatherData.Name.Equals("Liverpool")) 
             {
                 var userData = new UserSettings
@@ -113,6 +113,12 @@ namespace WeatherApp.Tests.ViewModels
                 Assert.IsNotNull(dataBack);
                 Assert.Equals(-2.584058, dataBack.LastLng);
             }
+        }
+
+        [Test]
+        public void Test_SaveSettings_NameIsNotLiverpool()
+        {
+            Assert.AreNotEqual(WeatherData.Name, "Everton");
         }
 
         [Test]
