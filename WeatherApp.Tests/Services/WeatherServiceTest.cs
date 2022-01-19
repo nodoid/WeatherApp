@@ -114,7 +114,7 @@ namespace WeatherApp.Tests.Services
         }
 
         [Test]
-        public async Task<T> Test_GetRequestAsync_Returns401<T>(string apiUrl, string pars)
+        public async Task Test_GetRequestAsync_Returns401<T>(string apiUrl, string pars)
         {
             var result = Activator.CreateInstance<T>();
 
@@ -123,26 +123,18 @@ namespace WeatherApp.Tests.Services
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
-                    StatusCode = HttpStatusCode.OK,
+                    StatusCode = HttpStatusCode.Unauthorized,
                     Content = new StringContent(new MockWeatherData().ToString())
                 });
 
             var httpClient = new HttpClient(request.Object);
             var send = await httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
 
-            if (send.StatusCode == HttpStatusCode.OK)
-            {
-                var res = await send.Content.ReadAsStringAsync();
-                result = JsonConvert.DeserializeObject<T>(res);
-            }
-
-            Assert.Equals(404, send.StatusCode);
+            Assert.Equals(401, send.StatusCode);
             Assert.IsNotNull(result);
-
-            return result;
         }
 
-        public async Task<T> Test_GetRequestAsync_Returns404<T>(string apiUrl, string pars)
+        public async Task Test_GetRequestAsync_Returns404<T>(string apiUrl, string pars)
         {
             var result = Activator.CreateInstance<T>();
 
@@ -151,22 +143,15 @@ namespace WeatherApp.Tests.Services
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
                 .ReturnsAsync(new HttpResponseMessage
                 {
-                    StatusCode = HttpStatusCode.OK,
+                    StatusCode = HttpStatusCode.NotFound,
                     Content = new StringContent(new MockWeatherData().ToString())
                 });
 
             var httpClient = new HttpClient(request.Object);
             var send = await httpClient.GetAsync($"1{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
 
-            if (send.StatusCode == HttpStatusCode.OK)
-            {
-                var res = await send.Content.ReadAsStringAsync();
-                result = JsonConvert.DeserializeObject<T>(res);
-            }
-
+            Assert.Equals(404, send.StatusCode);
             Assert.IsNotNull(result);
-
-            return result;
         }
 
         [Test]
@@ -193,8 +178,6 @@ namespace WeatherApp.Tests.Services
                 var r = JsonConvert.DeserializeObject(res);
                 result = (T)r;
             }
-
-            Assert.IsNotNull(result);
 
             return result;
         }
