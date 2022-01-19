@@ -40,7 +40,7 @@ namespace WeatherApp.Tests.Services
         }
 
         [Test]
-        public async Task TestGetWeatherForLocation(double lng, double lat)
+        public async Task Test_GetWeatherForLocation(double lng, double lat)
         {
             var api = "lat=";
             var pars = $"{lat}&lon={lng}";
@@ -116,8 +116,6 @@ namespace WeatherApp.Tests.Services
         [Test]
         public async Task Test_GetRequestAsync_Returns401<T>(string apiUrl, string pars)
         {
-            var result = Activator.CreateInstance<T>();
-
             var request = new Mock<HttpMessageHandler>(HttpMethod.Get, $"1{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
                 request.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
@@ -133,10 +131,9 @@ namespace WeatherApp.Tests.Services
             Assert.Equals(401, send.StatusCode);
         }
 
+        [Test]
         public async Task Test_GetRequestAsync_Returns404<T>(string apiUrl, string pars)
         {
-            var result = Activator.CreateInstance<T>();
-
             var request = new Mock<HttpMessageHandler>(HttpMethod.Get, $"1{Constants.Constants.BaseUri}");
             request.Protected()
                 .Setup<Task<HttpResponseMessage>>("SendAsync", ItExpr.IsAny<HttpRequestMessage>(), ItExpr.IsAny<CancellationToken>())
