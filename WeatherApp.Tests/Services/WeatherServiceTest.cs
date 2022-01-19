@@ -131,7 +131,6 @@ namespace WeatherApp.Tests.Services
             var send = await httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
 
             Assert.Equals(401, send.StatusCode);
-            Assert.IsNotNull(result);
         }
 
         public async Task Test_GetRequestAsync_Returns404<T>(string apiUrl, string pars)
@@ -151,12 +150,11 @@ namespace WeatherApp.Tests.Services
             var send = await httpClient.GetAsync($"1{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
 
             Assert.Equals(404, send.StatusCode);
-            Assert.IsNotNull(result);
         }
 
         [Test]
         [ExpectedException(typeof(JsonException))]
-        public async Task<T> Test_GetRequestAsync_Exception<T>(string apiUrl, string pars)
+        public async Task Test_GetRequestAsync_Exception<T>(string apiUrl, string pars)
         {
             var result = Activator.CreateInstance<T>();
 
@@ -178,8 +176,6 @@ namespace WeatherApp.Tests.Services
                 var r = JsonConvert.DeserializeObject(res);
                 result = (T)r;
             }
-
-            return result;
         }
     }
 }
