@@ -9,7 +9,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using WeatherApp.Models;
 using WeatherApp.Tests.Helpers;
 using WeatherApp.Tests.Interfaces;
 using WeatherApp.Tests.Models;
@@ -83,18 +82,16 @@ namespace WeatherApp.Tests.Services
         }
 
         [Test]
-        public T CreateInstance_OfT<T> (T objectType)
+        public void CreateInstance_OfT<T> (T objectType)
         {
             var result = Activator.CreateInstance<T>();
             Assert.IsNotNull(result);
-
-            return result;
         }
 
         [Test]
-        public async Task Test_GetRequestAsync<T>(string apiUrl, string pars)
+        public void Test_GetRequestAsync<T>(string apiUrl, string pars)
         {
-            var result = Activator.CreateInstance<T>(); ;
+            var result = new MockWeatherData();
 
             var request = new Mock<HttpMessageHandler>(HttpMethod.Get, $"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
             request.Protected()
@@ -106,19 +103,19 @@ namespace WeatherApp.Tests.Services
                 });
 
             var httpClient = new HttpClient(request.Object);
-            var send = await httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+            var send = httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}").Result;
 
             if (send.StatusCode == HttpStatusCode.OK)
             {
-                var res = await send.Content.ReadAsStringAsync();
-                result = JsonConvert.DeserializeObject<T>(res);
+                var res = send.Content.ReadAsStringAsync().Result;
+                result = JsonConvert.DeserializeObject<MockWeatherData>(res);
             }
 
             Assert.IsNotNull(result);
         }
 
         [Test]
-        public async Task Test_GetRequestAsync_Returns401<T>(string apiUrl, string pars)
+        public void Test_GetRequestAsync_Returns401<T>(string apiUrl, string pars)
         {
             var request = new Mock<HttpMessageHandler>(HttpMethod.Get, $"1{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
                 request.Protected()
@@ -130,13 +127,13 @@ namespace WeatherApp.Tests.Services
                 });
 
             var httpClient = new HttpClient(request.Object);
-            var send = await httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+            var send = httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}").Result;
 
             Assert.Equals(401, send.StatusCode);
         }
 
         [Test]
-        public async Task Test_GetRequestAsync_Returns404<T>(string apiUrl, string pars)
+        public void Test_GetRequestAsync_Returns404<T>(string apiUrl, string pars)
         {
             var request = new Mock<HttpMessageHandler>(HttpMethod.Get, $"1{Constants.Constants.BaseUri}");
             request.Protected()
@@ -148,14 +145,14 @@ namespace WeatherApp.Tests.Services
                 });
 
             var httpClient = new HttpClient(request.Object);
-            var send = await httpClient.GetAsync($"1{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+            var send = httpClient.GetAsync($"1{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}").Result;
 
             Assert.Equals(404, send.StatusCode);
         }
 
         [Test]
         [ExpectedException(typeof(JsonException))]
-        public async Task Test_GetRequestAsync_Exception<T>(string apiUrl, string pars)
+        public void Test_GetRequestAsync_Exception<T>(string apiUrl, string pars)
         {
             var result = Activator.CreateInstance<T>();
 
@@ -169,11 +166,11 @@ namespace WeatherApp.Tests.Services
             });
 
             var httpClient = new HttpClient(request.Object);
-            var send = await httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}");
+            var send = httpClient.GetAsync($"{Constants.Constants.BaseUri}{apiUrl}{pars}&appid={Constants.Constants.APIKey}").Result;
 
             if (send.StatusCode == HttpStatusCode.OK)
             {
-                var res = await send.Content.ReadAsStringAsync();
+                var res = send.Content.ReadAsStringAsync().Result;
                 var r = JsonConvert.DeserializeObject(res);
                 result = (T)r;
             }
