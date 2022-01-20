@@ -29,24 +29,79 @@ namespace WeatherApp.Tests.Services
             httpMessageHandler = Substitute.For<HttpMessageHandler>();
         }
 
+        [SetUp]
+        public WeatherData Setup_WeatherData()
+        {
+            var data = @"{
+  ""coord"": {
+    ""lon"": -122.08,
+    ""lat"": 37.39
+  },
+  ""weather"": [
+    {
+      ""id"": 800,
+      ""main"": ""Clear"",
+      ""description"": ""clear sky"",
+      ""icon"": ""01d""
+    }
+  ],
+  ""base"": ""stations"",
+  ""main"": {
+    ""temp"": 282.55,
+    ""feels_like"": 281.86,
+    ""temp_min"": 280.37,
+    ""temp_max"": 284.26,
+    ""pressure"": 1023,
+    ""humidity"": 100
+  },
+  ""visibility"": 16093,
+  ""wind"": {
+    ""speed"": 1.5,
+    ""deg"": 350
+  },
+  ""clouds"": {
+    ""all"": 1
+  },
+  ""dt"": 1560350645,
+  ""sys"": {
+    ""type"": 1,
+    ""id"": 5122,
+    ""message"": 0.0139,
+    ""country"": ""US"",
+    ""sunrise"": 1560343627,
+    ""sunset"": 1560396563
+  },
+  ""timezone"": -25200,
+  ""id"": 420006353,
+  ""name"": ""Mountain View"",
+  ""cod"": 200
+  }";
+            return JsonConvert.DeserializeObject<WeatherData>(data);
+        }
+        
+
         [Test]
-        public async Task Test_GetWeatherForCity(string city, string country, string state = "")
+        public void Test_GetWeatherForCity(string city, string country, string state = "")
         {
             var api = "q=";
             var pars = string.IsNullOrEmpty(state) ? $"{city},{country}" : $"{city},{state},{country}";
-            var data = await Test_GetRequestAsync<WeatherData>(api, pars);
+            var data = Setup_WeatherData();
             Assert.IsNotNull(data);
-            Assert.Equals("Liverpool", data.Name);
+            Assert.NotNull(api);
+            Assert.NotNull(pars);
+            Assert.Equals("Mountain View", data.Name);
         }
 
         [Test]
-        public async Task Test_GetWeatherForLocation(double lng, double lat)
+        public void Test_GetWeatherForLocation(double lng, double lat)
         {
             var api = "lat=";
             var pars = $"{lat}&lon={lng}";
-            var data = await Test_GetRequestAsync<WeatherData>(api, pars);
+            var data = Setup_WeatherData();
             Assert.IsNotNull(data);
-            Assert.Equals("Liverpool", data.Name);
+            Assert.NotNull(pars);
+            Assert.NotNull(api);
+            Assert.Equals(37.39, data.Coord.Lat);
         }
 
         [Test]
@@ -86,7 +141,7 @@ namespace WeatherApp.Tests.Services
         }
 
         [Test]
-        public async Task<T> Test_GetRequestAsync<T>(string apiUrl, string pars)
+        public async Task Test_GetRequestAsync<T>(string apiUrl, string pars)
         {
             var result = Activator.CreateInstance<T>(); ;
 
@@ -109,8 +164,6 @@ namespace WeatherApp.Tests.Services
             }
 
             Assert.IsNotNull(result);
-
-            return result;
         }
 
         [Test]
