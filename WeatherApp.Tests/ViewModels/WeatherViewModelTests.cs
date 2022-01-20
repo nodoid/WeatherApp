@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using WeatherApp.Database;
 using WeatherApp.Interfaces;
 using WeatherApp.Models;
+using WeatherApp.Tests.Helpers;
 
 namespace WeatherApp.Tests.ViewModels
 {
@@ -30,13 +31,13 @@ namespace WeatherApp.Tests.ViewModels
             {
                 AutoOnStart = false,
                 CanUseGeolocation = true,
-                CityName = "Liverpool",
-                Country = "UK",
-                Id = 0,
-                IsUSState = false,
+                CityName = "Mountain View",
+                Country = "US",
+                Id = 3,
+                IsUSState = true,
                 USState = "",
-                LastLat = 53.243809,
-                LastLng = -2.584058
+                LastLat = 37.39,
+                LastLng = -122.08
             });
             var data = sqliteRepo.Count<UserSettings>();
 
@@ -48,9 +49,9 @@ namespace WeatherApp.Tests.ViewModels
         {
             var user = sqliteRepo.GetData<UserSettings, int>("Id", 0);
             Assert.IsNotNull(user);
-            Assert.AreEqual("Liverpool", user.CityName);
+            Assert.AreEqual("Mountain View", user.CityName);
             Assert.AreEqual("0", user.Id);
-            Assert.AreEqual(53.243809, user.LastLat);
+            Assert.AreEqual(37.39, user.LastLat);
         }
 
         [Test]
@@ -72,16 +73,16 @@ namespace WeatherApp.Tests.ViewModels
                 var data = await webservice.GetWeatherForCity(user.CityName, user.Country, state);
                 WeatherData = data;
                 Assert.IsNotNull(data);
-                Assert.Equals("Liverpool", data.Name);
+                Assert.Equals("Mountain View", data.Name);
             }
         }
 
         [Test]
-        public async Task Test_UserSettings_NotNull_CallFromLocation()
+        public void Test_UserSettings_NotNull_CallFromLocation()
         {
             var user = sqliteRepo.GetData<UserSettings, int>("Id",0 );
 
-            var data = await webservice.GetWeatherForLocation(user.LastLng, user.LastLng);
+            var data = new MockWeatherDataSetup().Setup_WeatherData();
             if (data != null)
             {
                 WeatherData = data;
@@ -91,21 +92,21 @@ namespace WeatherApp.Tests.ViewModels
         }
 
         [Test]
-        public void Test_SaveSettings_NameIsLiverpool()
+        public void Test_SaveSettings_NameIsMountainView()
         {
-            if (WeatherData.Name.Equals("Liverpool")) 
+            if (WeatherData.Name.Equals("Mountain View")) 
             {
                 var userData = new UserSettings
                 {
                     AutoOnStart = false,
                     CanUseGeolocation = true,
-                    CityName = "Liverpool",
-                    Country = "UK",
+                    CityName = "Mountain View",
+                    Country = "US",
                     Id = 3,
-                    IsUSState = false,
+                    IsUSState = true,
                     USState = "",
-                    LastLat = 53.243809,
-                    LastLng = -2.584058
+                    LastLat = 37.39,
+                    LastLng = -122.08
                 };
 
                 sqliteRepo.SaveData(userData);
@@ -116,7 +117,7 @@ namespace WeatherApp.Tests.ViewModels
         }
 
         [Test]
-        public void Test_SaveSettings_NameIsNotLiverpool()
+        public void Test_SaveSettings_NameIsNotMountainView()
         {
             Assert.AreNotEqual(WeatherData.Name, "Everton");
         }
